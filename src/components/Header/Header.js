@@ -6,15 +6,24 @@ import {
   MenuItem
 } from '@material-ui/core';
 import categories from '../../data/category.js';
+import { debounce } from 'lodash';
+
 import './Header.css';
 
-const Header = ({ category, setCategory, word, setWord }) => {
+const Header = ({
+  category,
+  setCategory,
+  word,
+  setWord,
+  lightMode,
+  setMeanings
+}) => {
   const darkTheme = createTheme({
     palette: {
       primary: {
-        main: '#fff'
+        main: lightMode ? '#000' : '#fff'
       },
-      type: 'dark'
+      type: lightMode ? 'light' : 'dark'
     }
   });
 
@@ -23,6 +32,10 @@ const Header = ({ category, setCategory, word, setWord }) => {
     setWord('');
     setMeanings([]);
   };
+
+  const handleText = debounce(text => {
+    setWord(text);
+  }, 500);
 
   return (
     <div className="header">
@@ -34,13 +47,13 @@ const Header = ({ category, setCategory, word, setWord }) => {
             id="filled-basic"
             // value={word}
             label="Search a Word"
-            onChange={e => setWord(e.target.value)}
+            onChange={e => handleText(e.target.value)}
           />
           <TextField
             select
             label="Language"
             value={category}
-            onChange={e => setCategory(e.target.value)}
+            onChange={e => handleChange(e)}
             className="select"
           >
             {categories.map(option => (
